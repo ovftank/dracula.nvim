@@ -17,6 +17,12 @@
 ---@field bright_magenta string
 ---@field bright_cyan string
 ---@field bright_white string
+---@field ansi_black string
+---@field ansi_white string
+---@field ansi_bright_black string
+---@field white_bright string
+---@field bg_dark string
+---@field bg_darker string
 ---@field menu string
 ---@field visual string
 ---@field gutter_fg string
@@ -31,7 +37,7 @@ return {
    red = "#FF5555",
    orange = "#FFB86C",
    yellow = "#F1FA8C",
-   green = "#50fa7b",
+   green = "#50FA7B",
    purple = "#BD93F9",
    cyan = "#8BE9FD",
    pink = "#FF79C6",
@@ -42,10 +48,16 @@ return {
    bright_magenta = "#FF92DF",
    bright_cyan = "#A4FFFF",
    bright_white = "#FFFFFF",
+   ansi_black = "#21222C",
+   ansi_white = "#F8F8F2",
+   ansi_bright_black = "#6272A4",
+   white_bright = "#FFFFFF",
+   bg_dark = "#21222C",
+   bg_darker = "#191A21",
    menu = "#21222C",
-   visual = "#3E4452",
-   gutter_fg = "#4B5263",
-   nontext = "#3B4048",
+   visual = "#44475A",
+   gutter_fg = "#6272A4",
+   nontext = "#3E404A",
    white = "#ABB2BF",
    black = "#191A21",
 }

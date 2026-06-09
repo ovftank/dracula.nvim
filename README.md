@@ -1,16 +1,15 @@
-<h1 align="center" >🧛‍♂️ dracula.nvim</h1>
+<h1 align="center" >🧛‍♂️ ovftank/dracula</h1>
 
 <p align="center"><a href="https://draculatheme.com/">Dracula</a> colorscheme for <a href="https://neovim.io/">NEOVIM</a> written in Lua</p>
 
-![dracula.nvim](./assets/showcase.png)
-
+![ovftank/dracula](./assets/showcase.png)
 
 ## ✔️ Requirements
 
 - Neovim >= 0.9.2
 - Treesitter (optional)
 
-NOTICE: if you use an older version of neovim (>=0.8.0 <0.9.2), you can pin this plugin to [commit 8fc749](https://github.com/Mofiqul/dracula.nvim/commit/8fc749e2479d62829c9c627867770035b74529a4)
+This fork keeps the original MIT license notice and focuses on matching the official VS Code Dracula colors more closely in Neovim-native highlight groups.
 
 ## #️ Supported Plugins
 
@@ -35,16 +34,33 @@ NOTICE: if you use an older version of neovim (>=0.8.0 <0.9.2), you can pin this
 
 ## ⬇️ Installation
 
-Install via package manager
+### lazy.nvim
 
 ```lua
--- Using Packer:
-use 'Mofiqul/dracula.nvim'
+{
+  "ovftank/dracula",
+  lazy = false,
+  priority = 1000,
+  opts = {},
+  config = function(_, opts)
+    require("dracula").setup(opts)
+    vim.cmd.colorscheme("dracula")
+  end,
+}
 ```
 
+Use `lazy = false` when this is your main colorscheme so it is available during startup. `priority = 1000` makes the theme load before other start plugins that define highlights.
+
+### packer.nvim
+
+```lua
+use "ovftank/dracula"
+```
+
+### vim-plug
+
 ```vim
-" Using Vim-Plug:
-Plug 'Mofiqul/dracula.nvim'
+Plug 'ovftank/dracula'
 ```
 
 ## 🚀 Usage
@@ -52,16 +68,25 @@ Plug 'Mofiqul/dracula.nvim'
 ```lua
 -- Lua:
 vim.cmd[[colorscheme dracula]]
--- or
-vim.cmd[[colorscheme dracula-soft]]
 ```
 
 ```vim
 " Vim-Script:
 colorscheme dracula
-" or:
-colorscheme dracula-soft
 ```
+
+With lazy.nvim, prefer loading the colorscheme in the plugin spec `config` function shown above. That guarantees `setup()` runs before `:colorscheme dracula`.
+
+If you want lazy.nvim to load the theme only when `:colorscheme dracula` is called, use:
+
+```lua
+{
+  "ovftank/dracula",
+  lazy = true,
+}
+```
+
+This is useful when `dracula` is installed but not your startup colorscheme.
 
 If you are using [`lualine`](https://github.com/hoob3rt/lualine.nvim), you can also enable the provided theme:
 
@@ -78,10 +103,11 @@ require('lualine').setup {
 ```
 
 If you are using [LazyVim](https://github.com/LazyVim/LazyVim), you can add this to your plugins/colorscheme.lua file:
+
 ```lua
 return {
   -- add dracula
-  { "Mofiqul/dracula.nvim" },
+  { "ovftank/dracula" },
 
   -- Configure LazyVim to load dracula
   {
@@ -93,10 +119,35 @@ return {
 }
 ```
 
+## How loading works
+
+Neovim loads a colorscheme with `:colorscheme dracula` by searching for `colors/dracula.lua` in `runtimepath` and package paths. This file then calls `require("dracula").load()`.
+
+The Lua module lives under `lua/dracula/`, so `require("dracula")` loads `lua/dracula/init.lua`. Neovim caches required Lua modules, so run `require("dracula").setup(...)` before `vim.cmd.colorscheme("dracula")`.
+
+lazy.nvim takes over plugin startup and does not rely on Neovim's native package loading. For a startup colorscheme, use `lazy = false` and `priority = 1000`. For an optional colorscheme, `lazy = true` is fine because lazy.nvim can load colorscheme plugins when `:colorscheme dracula` is executed.
+
 ## 🔧 Configuration
 
 The configuration must be run before `colorscheme` command to take effect.
-To customize the 'dracula-soft' variant, include `theme = 'dracula-soft'` in the `setup()` table below.
+
+Minimal lazy.nvim setup:
+
+```lua
+{
+  "ovftank/dracula",
+  lazy = false,
+  priority = 1000,
+  opts = {
+    transparent_bg = false,
+    italic_comment = false,
+  },
+  config = function(_, opts)
+    require("dracula").setup(opts)
+    vim.cmd.colorscheme("dracula")
+  end,
+}
+```
 
 If you're using Lua:
 
@@ -112,7 +163,7 @@ dracula.setup({
     red = "#FF5555",
     orange = "#FFB86C",
     yellow = "#F1FA8C",
-    green = "#50fa7b",
+    green = "#50FA7B",
     purple = "#BD93F9",
     cyan = "#8BE9FD",
     pink = "#FF79C6",
@@ -123,10 +174,16 @@ dracula.setup({
     bright_magenta = "#FF92DF",
     bright_cyan = "#A4FFFF",
     bright_white = "#FFFFFF",
+    ansi_black = "#21222C",
+    ansi_white = "#F8F8F2",
+    ansi_bright_black = "#6272A4",
+    white_bright = "#FFFFFF",
+    bg_dark = "#21222C",
+    bg_darker = "#191A21",
     menu = "#21222C",
-    visual = "#3E4452",
-    gutter_fg = "#4B5263",
-    nontext = "#3B4048",
+    visual = "#44475A",
+    gutter_fg = "#6272A4",
+    nontext = "#3E404A",
     white = "#ABB2BF",
     black = "#191A21",
   },
@@ -164,3 +221,7 @@ local colors = require('dracula').colors()
 This will return the following table (`dracula` palette shown):
 
 ![colors](./assets/colors.png)
+
+## License
+
+MIT. This fork keeps the original copyright and permission notice in `LICENSE.md`, as required by the MIT license.

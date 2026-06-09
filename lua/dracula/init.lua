@@ -10,7 +10,6 @@ local tbl_deep_extend = vim.tbl_deep_extend
 ---@field show_end_of_buffer? boolean
 ---@field lualine_bg_color? string?
 ---@field colors? Palette
----@field theme? string?
 ---@field overrides? HighlightGroups | fun(colors: Palette): HighlightGroups
 local DEFAULT_CONFIG = {
    italic_comment = false,
@@ -19,7 +18,6 @@ local DEFAULT_CONFIG = {
    lualine_bg_color = nil,
    colors = require("dracula.palette"),
    overrides = {},
-   theme = 'dracula'
 }
 
 local TRANSPARENTS = {
@@ -32,22 +30,22 @@ local TRANSPARENTS = {
 }
 
 local function apply_term_colors(colors)
-   g.terminal_color_0 = colors.black
+   g.terminal_color_0 = colors.ansi_black
    g.terminal_color_1 = colors.red
    g.terminal_color_2 = colors.green
    g.terminal_color_3 = colors.yellow
    g.terminal_color_4 = colors.purple
    g.terminal_color_5 = colors.pink
    g.terminal_color_6 = colors.cyan
-   g.terminal_color_7 = colors.white
-   g.terminal_color_8 = colors.selection
+   g.terminal_color_7 = colors.ansi_white
+   g.terminal_color_8 = colors.ansi_bright_black
    g.terminal_color_9 = colors.bright_red
    g.terminal_color_10 = colors.bright_green
    g.terminal_color_11 = colors.bright_yellow
    g.terminal_color_12 = colors.bright_blue
    g.terminal_color_13 = colors.bright_magenta
    g.terminal_color_14 = colors.bright_cyan
-   g.terminal_color_15 = colors.bright_white
+   g.terminal_color_15 = colors.white_bright
    g.terminal_color_background = colors.bg
    g.terminal_color_foreground = colors.fg
 end
@@ -96,14 +94,7 @@ local user_configs = {}
 ---@return DraculaConfig
 local function get_configs()
    local configs = DEFAULT_CONFIG
-
-   if g.colors_name == 'dracula-soft' then
-      configs.theme = 'dracula-soft'
-      configs.colors = require('dracula.palette-soft')
-   elseif g.colors_name == 'dracula' then
-      configs.theme = 'dracula'
-      configs.colors = require('dracula.palette')
-   end
+   configs.colors = require('dracula.palette')
 
    configs = tbl_deep_extend("force", configs, user_configs)
 
@@ -119,10 +110,9 @@ local function setup(configs)
 end
 
 ---load dracula colorscheme
----@param theme string?
-local function load(theme)
+local function load()
    if vim.fn.has("nvim-0.7") ~= 1 then
-      vim.notify("dracula.nvim: you must use neovim 0.7 or higher")
+      vim.notify("ovftank/dracula: you must use neovim 0.7 or higher")
       return
    end
 
@@ -137,7 +127,7 @@ local function load(theme)
 
    o.background = "dark"
    o.termguicolors = true
-   g.colors_name = theme or 'dracula'
+   g.colors_name = 'dracula'
 
    apply(get_configs())
 end
